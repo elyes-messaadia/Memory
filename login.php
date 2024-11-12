@@ -1,6 +1,6 @@
 <?php
 session_start();
-include_once 'nav.php'
+include_once 'nav.php';
 require_once 'Player.php';
 
 // Connexion à la base de données
@@ -26,7 +26,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = "Nom d'utilisateur ou mot de passe incorrect";
     }
 }
-
 ?>
 
 <!DOCTYPE html>
