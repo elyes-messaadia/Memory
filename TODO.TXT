@@ -1,9 +1,18 @@
-MANAGE SESSIONS&SCORES /
+Manage sessions & scores ☑️
 
-UPDATE TEXT COLOR IN register.php /
+Update the text color in register.php ☑️
 
-SORT FILES IN THE RIGHT FOLDERS (EX: nav.php INTO includes/_nav.php) /
+Sort files in folders 
+(EX: nav.php INTO includes/_nav.php) ☑️
 
-ADD INCLUDES FOLDER /
+Create includes folder ✅
 
-WE DID A GOOD JOB IT'S 03:53 AM AHAHAH \/
+Fix paths ☑️
+
+Logic update for card flips and scores ☑️
+
+Limited time to find a pair
+If there's no pairs, then return card 
+(2,5s should be good) ☑️
+
+WE DID A GOOD JOB IT'S 03:53 AM AHAHAH ✅

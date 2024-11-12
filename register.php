@@ -1,6 +1,6 @@
 <?php
 session_start();
-include_once 'nav.php';
+include_once 'includes/_nav.php';
 require_once 'Player.php';
 
 // Connexion à la base de données avec PDO

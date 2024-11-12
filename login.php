@@ -1,6 +1,6 @@
 <?php
 session_start();
-include_once 'nav.php';
+include_once 'includes/_nav.php';
 require_once 'Player.php';
 
 // Connexion à la base de données
@@ -58,6 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <button type="submit">Se connecter</button>
     </form>
+    <p>Pas encore inscrit ? <a href="register.php">Créer un compte</a></p>
 </body>
 
 </html>

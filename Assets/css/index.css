@@ -1,6 +1,5 @@
-/* Fond d'écran pour la page */
 body {
-  overflow: hidden; /* Masque le défilement globalement */
+  overflow: hidden;
   background-image: url("../img/wallpaper.jpeg");
   background-size: cover;
   background-repeat: no-repeat;
@@ -10,21 +9,29 @@ body {
 
 nav {
   display: block;
-  background-color: lightgray; /* Couleur temporaire pour tester */
+  background-color: lightgray;
   padding: 10px;
   opacity: 0.33;
 }
 
 h1 {
-  text-align: center; /* Centre le texte horizontalement */
-  color: #ffffff; /* Change la couleur du texte (blanc ici) */
-  font-size: 3em; /* Ajuste la taille du texte (optionnel) */
-  margin-top: 20px; /* Ajoute de l'espace au-dessus (ajuste si besoin) */
+  text-align: center;
+  color: #ffffff;
+  font-size: 3em;
+  margin-top: 20px;
+  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+    "Lucida Sans", Arial, sans-serif;
 }
 
 h2 {
   text-align: center;
   margin-top: 40px; /* Ajoute de l'espace au-dessus du titre du classement */
+}
+
+p {
+  color: bisque; /* test */
+  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+    "Lucida Sans", Arial, sans-serif;
 }
 
 /* Container pour centrer les cartes */

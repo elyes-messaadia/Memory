@@ -1,6 +1,6 @@
 <?php
 session_start();
-include_once 'nav.php';
+include_once 'includes/_nav.php';
 require_once 'Card.php';
 require_once 'Player.php';
 
@@ -46,7 +46,7 @@ $topPlayers = Player::getTopPlayers($pdo, 10);
 </head>
 
 <body>
-    <?php include_once 'nav.php'; ?>
+    <?php include_once 'includes/_nav.php'; ?>
     <div class="scroll-container">
         <h1>Memory</h1>
 
