@@ -1,8 +1,8 @@
 <?php
 session_start();
+include_once 'nav.php';
 require_once 'Card.php';
 require_once 'Player.php';
-include_once 'nav.php';
 
 //  require_once pour les fichiers critiques 
 // dont la page dépend pour éviter des comportements inattendus.
@@ -46,6 +46,7 @@ $topPlayers = Player::getTopPlayers($pdo, 10);
 </head>
 
 <body>
+    <?php include_once 'nav.php'; ?>
     <div class="scroll-container">
         <h1>Memory</h1>
 
