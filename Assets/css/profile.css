@@ -1,0 +1,103 @@
+/* Styles généraux pour le corps */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+}
+
+/* Container principal pour le profil */
+.profile-container {
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 80%;
+  max-width: 600px;
+  text-align: center;
+}
+
+/* Titre de la page */
+.profile-container h1 {
+  font-size: 2em;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+/* Information de base (comme l'email) */
+.profile-container p {
+  font-size: 1.1em;
+  color: #555;
+  margin-bottom: 20px;
+}
+
+/* Sous-titre pour la section des scores */
+.profile-container h2 {
+  font-size: 1.5em;
+  color: #333;
+  margin-top: 30px;
+  margin-bottom: 15px;
+}
+
+/* Style de la table des scores */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+/* En-tête de la table */
+th,
+td {
+  padding: 10px;
+  text-align: center;
+}
+
+th {
+  background-color: #333;
+  color: #fff;
+  font-weight: bold;
+}
+
+td {
+  border: 1px solid #ddd;
+  color: #555;
+}
+
+/* Couleur de fond pour les lignes alternées */
+tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+/* Hover effect pour les lignes */
+tr:hover {
+  background-color: #f1f1f1;
+}
+
+nav {
+  display: flex;
+  justify-content: center; /* Centre les liens horizontalement */
+  align-items: center; /* Centre verticalement les éléments de la nav */
+  background-color: #333; /* Couleur de fond pour la barre de navigation */
+  padding: 15px;
+  position: fixed; /* Fixe la barre en haut de la page */
+  top: 0;
+  left: 0;
+  width: 100%; /* Barre de navigation étendue sur toute la largeur */
+  z-index: 1000; /* Assure que la navigation est au-dessus d'autres éléments */
+}
+
+/* Style pour les liens de navigation */
+nav a {
+  color: #fff; /* Couleur des liens */
+  text-decoration: none;
+  margin: 0 15px; /* Espace entre les liens */
+  font-weight: bold;
+}
+
+nav a:hover {
+  color: #007bff; /* Change de couleur lors du survol */
+}

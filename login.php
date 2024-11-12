@@ -1,57 +1,64 @@
 <?php
-$pageTitle = "Connexion";
-include('includes/_header.php'); // Inclusion de l'en-tête
+session_start();
+include_once 'nav.php'
+require_once 'Player.php';
 
-display_flash_message(); // Afficher les messages flash
+// Connexion à la base de données
+$pdo = new PDO("mysql:host=localhost;dbname=memory_game", "root", "");
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    verify_csrf_token(); // Vérification du token CSRF
-
-    $email = $conn->real_escape_string($_POST['email']);
+// Vérifie si le formulaire est soumis
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $username = $_POST['username'];
     $password = $_POST['password'];
 
-    $sql = "SELECT * FROM users WHERE email = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $email);
-    $stmt->execute();
-    $result = $stmt->get_result();
+    // Requête pour vérifier le joueur dans la base de données
+    $stmt = $pdo->prepare("SELECT * FROM players WHERE username = ?");
+    $stmt->execute([$username]);
+    $playerData = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($result->num_rows > 0) {
-        $user = $result->fetch_assoc();
-
-        if (password_verify($password, $user['password'])) {
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['username'] = $user['username'];
-            $_SESSION['profile_image'] = $user['profile_image'];
-
-            set_flash_message("Connexion réussie !");
-            header("Location: profile.php");
-            exit();
-        } else {
-            set_flash_message("Mot de passe incorrect.", 'danger');
-        }
+    // Vérifie si l'utilisateur existe et que le mot de passe correspond
+    if ($playerData && password_verify($password, $playerData['password'])) {
+        session_regenerate_id(); // Renouvelle l'ID de session pour éviter les conflits de session
+        $_SESSION['player_id'] = $playerData['id']; // Définit l'ID du joueur dans la session
+        header("Location: profile.php"); // Redirige vers le profil
+        exit;
     } else {
-        set_flash_message("Aucun utilisateur trouvé avec cet email.", 'danger');
+        $error = "Nom d'utilisateur ou mot de passe incorrect";
     }
-
-    $stmt->close();
 }
 
-$conn->close();
 ?>
 
-<h2 class="text-center">Connexion</h2>
-<form action="login.php" method="post" class="mt-4">
-    <?php generate_csrf_token(); ?> <!-- Ajout du token CSRF -->
-    <div class="mb-3">
-        <label for="email" class="form-label">Email :</label>
-        <input type="email" class="form-control" name="email" required>
-    </div>
-    <div class="mb-3">
-        <label for="password" class="form-label">Mot de passe :</label>
-        <input type="password" class="form-control" name="password" required minlength="8">
-    </div>
-    <button type="submit" class="btn btn-primary w-100">Se connecter</button>
-</form>
+<!DOCTYPE html>
+<html lang="fr">
 
-<?php include('includes/_footer.php'); // Inclusion du pied de page ?>
+<head>
+    <meta charset="UTF-8">
+    <title>Connexion</title>
+    <link rel="stylesheet" href="Assets/css/index.css">
+</head>
+
+<body>
+    <?php
+    // Affiche le message de succès si présent
+    if (isset($_SESSION['success_message'])) {
+        echo "<p style='color: green;'>" . htmlspecialchars($_SESSION['success_message']) . "</p>";
+        unset($_SESSION['success_message']);
+    }
+    ?>
+    <h1>Connexion</h1>
+    <?php if (isset($error)): ?>
+        <p style="color: red;"><?php echo htmlspecialchars($error); ?></p>
+    <?php endif; ?>
+    <form action="login.php" method="POST">
+        <label for="username">Nom d'utilisateur :</label>
+        <input type="text" id="username" name="username" required><br><br>
+
+        <label for="password">Mot de passe :</label>
+        <input type="password" id="password" name="password" required><br><br>
+
+        <button type="submit">Se connecter</button>
+    </form>
+</body>
+
+</html>

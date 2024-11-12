@@ -1,67 +1,91 @@
 <?php
-$pageTitle = "Inscription";
-include('includes/_header.php'); // Inclusion de l'en-tête
+session_start();
+include_once 'nav.php';
+require_once 'Player.php';
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $username = $conn->real_escape_string($_POST['username']);
-    $email = $conn->real_escape_string($_POST['email']);
-    $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
-    $profile_image = 'default.jpg';
+// Connexion à la base de données avec PDO
+$pdo = new PDO("mysql:host=localhost;dbname=memory_game", "root", "");
 
-    if (!empty($_FILES['profile_image']['name'])) {
-        $allowed_types = ['image/jpeg', 'image/png', 'image/gif'];
-        if (in_array($_FILES['profile_image']['type'], $allowed_types) && $_FILES['profile_image']['size'] <= 1048576) {
-            $profile_image = basename($_FILES['profile_image']['name']);
-            $target_dir = "uploads/";
-            $target_file = $target_dir . $profile_image;
-            $profile_image = $conn->real_escape_string($profile_image);
+// Vérifie si le formulaire est soumis
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $username = trim($_POST['username']);
+    $email = trim($_POST['email']);
+    $password = $_POST['password'];
+    $confirmPassword = $_POST['confirm_password'];
 
-            if (!move_uploaded_file($_FILES['profile_image']['tmp_name'], $target_file)) {
-                set_flash_message("Erreur lors du téléchargement de l'image.", 'danger');
-                header("Location: register.php");
-                exit();
-            }
-        } else {
-            set_flash_message("Format de fichier non valide ou taille trop grande.", 'danger');
-        }
+    // Vérification des erreurs
+    $errors = [];
+
+    if (empty($username)) {
+        $errors[] = "Le nom d'utilisateur est requis.";
+    }
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $errors[] = "L'adresse email n'est pas valide.";
+    }
+    if (empty($password)) {
+        $errors[] = "Le mot de passe est requis.";
+    }
+    if ($password !== $confirmPassword) {
+        $errors[] = "Les mots de passe ne correspondent pas.";
     }
 
-    $stmt = $conn->prepare("INSERT INTO users (username, email, password, profile_image) VALUES (?, ?, ?, ?)");
-    $stmt->bind_param("ssss", $username, $email, $password, $profile_image);
+    // Vérifie si l'email ou le nom d'utilisateur est déjà pris
+    $stmt = $pdo->prepare("SELECT * FROM players WHERE username = ? OR email = ?");
+    $stmt->execute([$username, $email]);
+    if ($stmt->fetch()) {
+        $errors[] = "Le nom d'utilisateur ou l'email est déjà pris.";
+    }
 
-    if ($stmt->execute()) {
-        set_flash_message("Inscription réussie !");
+    // Si aucune erreur, enregistrer le joueur
+    if (empty($errors)) {
+        $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+        $stmt = $pdo->prepare("INSERT INTO players (username, email, password) VALUES (?, ?, ?)");
+        $stmt->execute([$username, $email, $hashedPassword]);
+
+        // Ajout du message de succès dans la session
+        $_SESSION['success_message'] = "Votre compte a été créé avec succès ! Vous pouvez maintenant vous connecter.";
+
+        // Rediriger vers la page de connexion
         header("Location: login.php");
-        exit();
-    } else {
-        set_flash_message("Erreur : " . $conn->error, 'danger');
+        exit;
     }
-
-    $stmt->close();
-    $conn->close();
 }
 ?>
 
-<h2 class="text-center">Inscription</h2>
-<form action="register.php" method="post" enctype="multipart/form-data" class="mt-4">
-    <?php generate_csrf_token(); ?> <!-- Ajout du token CSRF -->
-    <div class="mb-3">
-        <label for="username" class="form-label">Nom d'utilisateur :</label>
-        <input type="text" class="form-control" name="username" required>
-    </div>
-    <div class="mb-3">
-        <label for="email" class="form-label">Email :</label>
-        <input type="email" class="form-control" name="email" required>
-    </div>
-    <div class="mb-3">
-        <label for="password" class="form-label">Mot de passe :</label>
-        <input type="password" class="form-control" name="password" required minlength="8">
-    </div>
-    <div class="mb-3">
-        <label for="profile_image" class="form-label">Image de profil (Max 1MB) :</label>
-        <input type="file" class="form-control" name="profile_image" accept=".jpg, .jpeg, .png, .gif">
-    </div>
-    <button type="submit" class="btn btn-primary w-100">S'inscrire</button>
-</form>
+<!DOCTYPE html>
+<html lang="fr">
 
-<?php include('includes/_footer.php'); // Inclusion du pied de page ?>
+<head>
+    <meta charset="UTF-8">
+    <title>Inscription</title>
+    <link rel="stylesheet" href="Assets/css/index.css">
+</head>
+
+<body>
+    <h1>Inscription</h1>
+    <?php if (!empty($errors)): ?>
+        <div class="errors">
+            <?php foreach ($errors as $error): ?>
+                <p><?php echo htmlspecialchars($error); ?></p>
+            <?php endforeach; ?>
+        </div>
+    <?php endif; ?>
+    <form action="register.php" method="POST">
+        <label for="username">Nom d'utilisateur :</label>
+        <input type="text" id="username" name="username" required><br><br>
+
+        <label for="email">Email :</label>
+        <input type="email" id="email" name="email" required><br><br>
+
+        <label for="password">Mot de passe :</label>
+        <input type="password" id="password" name="password" required><br><br>
+
+        <label for="confirm_password">Confirmer le mot de passe :</label>
+        <input type="password" id="confirm_password" name="confirm_password" required><br><br>
+
+        <button type="submit">S'inscrire</button>
+    </form>
+    <p>Déjà un compte ? <a href="login.php">Connectez-vous ici</a></p>
+</body>
+
+</html>
